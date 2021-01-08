@@ -1,5 +1,3 @@
-import { sum } from './index';
-import { expect } from 'chai';
 
 /**
 
@@ -20,9 +18,14 @@ Examples:
 
  */
 
-describe('sample test-suite', () => {
-    it('sum 1 + 3 should be 4', () => {
-        expect(sum(1, 3)).eql(4);
+describe("roman numeral rendering", () => {
+    it.each`
+        number | roman
+        ${1}   | ${"I"}
+    `("returns $roman when given $number", ({ number, roman }) => {
+        expect(toRomanNumerals(number)).toBe(roman);
     });
 });
 
+function toRomanNumerals(n) {
+}
