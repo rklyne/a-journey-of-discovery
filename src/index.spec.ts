@@ -23,12 +23,12 @@ describe("roman numeral rendering", () => {
         ${1} | ${"I"}
         ${2} | ${"II"}
         ${3} | ${"III"}
+        ${4} | ${"IV"}
     `("returns $roman when given $number", ({ n, roman }) => {
         expect(toRomanNumerals(n)).toBe(roman);
     });
 });
 
 function toRomanNumerals(n) {
-    if (n === 2) return "II";
-    return "I";
+    return  "I".repeat(n);
 }
