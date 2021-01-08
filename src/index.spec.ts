@@ -22,10 +22,12 @@ describe("roman numeral rendering", () => {
     it.each`
         number | roman
         ${1}   | ${"I"}
+        ${2}   | ${"II"},
     `("returns $roman when given $number", ({ number, roman }) => {
         expect(toRomanNumerals(number)).toBe(roman);
     });
 });
 
 function toRomanNumerals(n) {
+    return "I";
 }
