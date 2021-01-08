@@ -19,15 +19,15 @@ Examples:
 
 describe("roman numeral rendering", () => {
     it.each`
-        number | roman
-        ${1}   | ${"I"}
-        ${2}   | ${"II"}
-    `("returns $roman when given $number", ({ number, roman }) => {
-        expect(toRomanNumerals(number)).toBe(roman);
+        n    | roman
+        ${1} | ${"I"}
+        ${2} | ${"II"}
+    `("returns $roman when given $number", ({ n, roman }) => {
+        expect(toRomanNumerals(n)).toBe(roman);
     });
 });
 
 function toRomanNumerals(n) {
-    if (n == 2) return "II";
+    if (n === 2) return "II";
     return "I";
 }
