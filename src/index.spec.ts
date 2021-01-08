@@ -22,6 +22,7 @@ describe("roman numeral rendering", () => {
         n    | roman
         ${1} | ${"I"}
         ${2} | ${"II"}
+        ${3} | ${"III"}
     `("returns $roman when given $number", ({ n, roman }) => {
         expect(toRomanNumerals(n)).toBe(roman);
     });
