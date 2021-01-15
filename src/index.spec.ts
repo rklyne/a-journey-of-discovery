@@ -1,8 +1,216 @@
-import { sum } from './index';
-import { expect } from 'chai';
+/**
+ * Tic Tac Toe
+ * - X always goes first
+ * - players alternate X's and O's
+ * - Players cannot play on a played position
+ * - A player with 3 O's or X's in a row (vertically or diagonally) wins the game
+ * - If all 9 squares are filled without a winner then it's a draw
+ */
 
-describe('sample test-suite', () => {
-    it('sum 1 + 3 should be 4', () => {
-        expect(sum(1, 3)).eql(4);
+type Player = "X" | "O";
+type Move = "X" | "O" | "";
+
+class Game {
+    _currentPlayer: Player = "X";
+    _moves: Move[] = ["", "", "", "", "", "", "", "", ""];
+
+    constructor() {}
+
+    public currentPlayer() {
+        return this._currentPlayer;
+    }
+
+    public moves() {
+        return this._moves;
+    }
+
+    public move(n) {
+        if (this._moves[n] != "") {
+            throw new Error("Cant play same move");
+        }
+        this._moves[n] = this._currentPlayer;
+        this._changePlayer();
+    }
+
+    public print() {
+      console.log(this._moves);
+    }
+
+    private _changePlayer() {
+        if (this._currentPlayer == "X") {
+            this._currentPlayer = "O";
+        } else {
+            this._currentPlayer = "X";
+        }
+    }
+
+    private _winningLines() {
+        return [
+          // rows
+            [this._moves[0], this._moves[1], this._moves[2]],
+            [this._moves[3], this._moves[4], this._moves[5]],
+            [this._moves[6], this._moves[7], this._moves[8]],
+          // columns
+            [this._moves[0], this._moves[3], this._moves[6]],
+            [this._moves[1], this._moves[4], this._moves[7]],
+            [this._moves[2], this._moves[5], this._moves[8]],
+          // diagonals
+            [this._moves[0], this._moves[4], this._moves[8]],
+            [this._moves[2], this._moves[4], this._moves[6]],
+        ];
+    }
+
+    public winner() {
+
+        for (let line of this._winningLines()) {
+            if (new Set(line).size === 1) {
+                if (line[0] != "") {
+                    return line[0];
+                }             
+            }
+            
+        }
+
+        if (this._moves.indexOf("") === -1) {
+            return "draw";
+        }
+        return ""
+    }
+
+}
+
+describe("tic-tac-toe", () => {
+    describe("starting a new game", () => {
+        it("x goes first", () => {
+            const game = new Game();
+            expect(game.currentPlayer()).toBe("X");
+        });
+
+        it("O goes second", () => {
+            const game = new Game();
+            game.move(1);
+            expect(game.currentPlayer()).toBe("O");
+        });
+    });
+
+    describe("legal moves", () => {
+        it("should not allow the same move on one position", () => {
+            const game = new Game();
+            game.move(0);
+            expect(() => {
+                game.move(0);
+            }).toThrow(Error);
+        });
+    });
+
+    describe("winners", () => {
+        it("new game has no winner yet", () => {
+            const game = new Game();
+            expect(game.winner()).toBe("");
+        });
+
+        it("X wins by filling first row", () => {
+            const game = new Game();
+            game.move(0);
+            game.move(5);
+            game.move(1);
+            game.move(6);
+            game.move(2);
+            expect(game.winner()).toBe("X");
+        });
+
+        it("O wins by filling first row", () => {
+            const game = new Game();
+            game.move(7);
+            game.move(0);
+            game.move(5);
+            game.move(1);
+            game.move(6);
+            game.move(2);
+            expect(game.winner()).toBe("O");
+        });
+
+        it("X wins by filling last column", () => {
+            const game = new Game();
+            game.move(2);
+            game.move(6);
+            game.move(5);
+            game.move(1);
+            game.move(8);
+            expect(game.winner()).toBe("X");
+        });
+
+        it("X wins on the last row but O only plays on the second row", () => {
+            const game = new Game();
+            game.move(6);
+            game.move(4);
+            game.move(7);
+            game.move(5);
+            game.move(8);
+            expect(game.winner()).toBe("X");
+        });
+
+        it("X wins by filling first column", () => {
+            const game = new Game();
+            game.move(0);
+            game.move(2);
+            game.move(3);
+            game.move(1);
+            game.move(6);
+            expect(game.winner()).toBe("X");
+        });
+
+        it("X wins by filling diagonal from top left", () => {
+            const game = new Game();
+            game.move(0);
+            game.move(6);
+            game.move(4);
+            game.move(1);
+            game.move(8);
+            expect(game.winner()).toBe("X");
+        });
+
+        it("X wins by filling diagonal from top right", () => {
+            const game = new Game();
+            game.move(2);
+            game.move(5);
+            game.move(4);
+            game.move(1);
+            game.move(6);
+            expect(game.winner()).toBe("X");
+        });
+
+      it("is incomplete if all but one cell is full and no winner", () => {
+        const game = new Game();
+        game.move(0);
+        game.move(1);
+        game.move(2);
+        game.move(4);
+        game.move(3);
+        game.move(5);
+        game.move(7);
+        game.move(6);
+
+        game.print();
+
+        expect(game.winner()).toBe("");
+      });
+
+      it("is a draw if all cells are full", () => {
+        const game = new Game();
+        game.move(0);
+        game.move(1);
+        game.move(2);
+        game.move(4);
+        game.move(3);
+        game.move(5);
+        game.move(7);
+        game.move(6);
+        game.move(8);
+
+        game.print();
+
+        expect(game.winner()).toBe("draw");
+      });
     });
 });
