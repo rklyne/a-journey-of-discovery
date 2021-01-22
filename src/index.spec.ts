@@ -10,9 +10,56 @@
 type Player = "X" | "O";
 type Move = "X" | "O" | "";
 
+class Board {
+  _moves: Move[];
+
+  constructor() {
+    this._moves = ["", "", "", "", "", "", "", "", ""];
+  }
+
+  public moveHasBeenPlayed(n): boolean {
+    return this._moves[n] !== "";
+  }
+
+  public allMovesHaveBeenPlayed(): boolean {
+    return this._moves.indexOf("") === -1;
+  }
+
+  public makeMove(n: number, player: Player): void {
+    this._moves[n] = player;
+  }
+
+  public print(): void {
+    console.log(this._moves);
+  }
+  
+  public rows() {
+    return [
+            [this._moves[0], this._moves[1], this._moves[2]],
+            [this._moves[3], this._moves[4], this._moves[5]],
+            [this._moves[6], this._moves[7], this._moves[8]],
+    ]
+  }
+
+        public columns() {
+        return [
+            [this._moves[0], this._moves[3], this._moves[6]],
+            [this._moves[1], this._moves[4], this._moves[7]],
+            [this._moves[2], this._moves[5], this._moves[8]],
+        ]
+        }
+
+        public diagonals() {
+          return [
+            [this._moves[0], this._moves[4], this._moves[8]],
+            [this._moves[2], this._moves[4], this._moves[6]],
+          ]
+        }
+}
+
 class Game {
     _currentPlayer: Player = "X";
-    _moves: Move[] = ["", "", "", "", "", "", "", "", ""];
+    _board: Board = new Board();
 
     constructor() {}
 
@@ -21,15 +68,23 @@ class Game {
     }
 
     public move(n) {
-        if (this._moves[n] !== "") {
+        if (this._board.moveHasBeenPlayed(n)) {
             throw new Error("Cant play same move");
         }
-        this._moves[n] = this._currentPlayer;
+        this._board.makeMove(n, this._currentPlayer);
         this._changePlayer();
     }
 
     public print() {
-      console.log(this._moves);
+      this._board.print();
+    }
+
+    public winner() {
+        if (this._board.allMovesHaveBeenPlayed()) {
+            return "draw";
+        }
+
+        return this._playerWithWinningLine();
     }
 
     private _changePlayer() {
@@ -40,27 +95,11 @@ class Game {
         // Refactor: no more magic numbers
         // Refactor: wrap `_moves` in a type
         // Refactor: too many lines
-        return [
-          // rows
-            [this._moves[0], this._moves[1], this._moves[2]],
-            [this._moves[3], this._moves[4], this._moves[5]],
-            [this._moves[6], this._moves[7], this._moves[8]],
-          // columns
-            [this._moves[0], this._moves[3], this._moves[6]],
-            [this._moves[1], this._moves[4], this._moves[7]],
-            [this._moves[2], this._moves[5], this._moves[8]],
-          // diagonals
-            [this._moves[0], this._moves[4], this._moves[8]],
-            [this._moves[2], this._moves[4], this._moves[6]],
-        ];
-    }
-
-    public winner() {
-        if (this._moves.indexOf("") === -1) {
-            return "draw";
-        }
-
-        return this._playerWithWinningLine();
+        return this._board.rows().concat(
+          this._board.columns()
+        ).concat(
+          this._board.diagonals()
+        )
     }
 
     private _playerWithWinningLine() {
