@@ -44,7 +44,7 @@ class Game {
         }
     }
 
-    private _winningLines() {
+    private _potentiallyWinningLines() {
         return [
           // rows
             [this._moves[0], this._moves[1], this._moves[2]],
@@ -61,25 +61,35 @@ class Game {
     }
 
     public winner() {
-
-        for (let line of this._winningLines()) {
-            if (Game.allArrayElementAreTheSame(line)) {
-                if (line[0] !== "") {
-                    return line[0];
-                }
-            }
-        }
-
         if (this._moves.indexOf("") === -1) {
             return "draw";
         }
-        return "";
+
+        return this._playerWithWinningLine();
+    }
+
+    private _playerWithWinningLine() {
+        let winningLines = this._potentiallyWinningLines().filter(Game.lineIsAWinner)
+        for (let line of this._potentiallyWinningLines()) {
+            if (Game.lineIsAWinner(line)) {
+                return line[0];
+            }
+        }
+
+        return ""
+    }
+
+    private static lineIsAWinner(line): boolean {
+        return Game.allArrayElementAreTheSame(line) && Game.lineHasBeenPlayedOn(line);
     }
 
     private static allArrayElementAreTheSame(array) {
         return new Set(array).size === 1;
     }
 
+    private static lineHasBeenPlayedOn(line) {
+        return line.some((x) => x !== "");
+    }
 }
 
 describe("tic-tac-toe", () => {
