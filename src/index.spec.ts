@@ -20,10 +20,6 @@ class Game {
         return this._currentPlayer;
     }
 
-    public moves() {
-        return this._moves;
-    }
-
     public move(n) {
         if (this._moves[n] !== "") {
             throw new Error("Cant play same move");
@@ -41,6 +37,9 @@ class Game {
     }
 
     private _potentiallyWinningLines() {
+        // Refactor: no more magic numbers
+        // Refactor: wrap `_moves` in a type
+        // Refactor: too many lines
         return [
           // rows
             [this._moves[0], this._moves[1], this._moves[2]],
