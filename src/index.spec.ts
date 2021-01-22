@@ -74,6 +74,9 @@ class Game {
         if (this._board.moveHasBeenPlayed(n)) {
             throw new Error("Cant play same move");
         }
+        if (this.winner() !== "") {
+            throw new Error(`You can't play on, ${this.winner()} has already won`);
+        }
         this._board.makeMove(n, this._currentPlayer);
         this._changePlayer();
     }
@@ -84,6 +87,7 @@ class Game {
 
     public winner(): Player | "" | "draw" {
         if (this._board.allMovesHaveBeenPlayed()) {
+            // BUG: What if the last move creates a win
             return "draw";
         }
 
@@ -102,11 +106,14 @@ class Game {
             .concat(this._board.diagonals());
     }
 
-    private _playerWithWinningLine() {
+    private _playerWithWinningLine(): (Player | "") {
         let winningLines = this._potentiallyWinningLines().filter(
             Game.lineIsAWinner
         );
         if (winningLines.length) {
+            // Refactor: encapsulate primitives
+            // Refactor: Extract Line collection
+            // Refactor: lift "player()" to Line
             return winningLines[0][0];
         }
         return "";
@@ -261,5 +268,51 @@ describe("tic-tac-toe", () => {
 
             expect(game.winner()).toBe("draw");
         });
+
+        it("a player can win on the last move", () => {
+            const game = new Game();
+            game.move(0);
+            game.move(1);
+            game.move(2);
+            game.move(4);
+            game.move(3);
+            game.move(5);
+            game.move(7);
+            game.move(8);
+            game.move(6);
+
+            game.print();
+
+            expect(game.winner()).toBe("X");
+        });
+
+        it("is a draw if all cells are full", () => {
+            const game = new Game();
+            game.move(0);
+            game.move(1);
+            game.move(2);
+            game.move(4);
+            game.move(3);
+            game.move(5);
+            game.move(7);
+            game.move(6);
+            game.move(8);
+
+            game.print();
+
+            expect(game.winner()).toBe("draw");
+        });
+
+        it("After a player has won, furhter play is refused", () => {
+            const game = new Game();
+            game.move(2);
+            game.move(6);
+            game.move(5);
+            game.move(1);
+            game.move(8);
+            // X has won here
+            expect(() => game.move(4)).toThrow(Error);
+        });
+
     });
 });
