@@ -79,7 +79,7 @@ class Game {
       this._board.print();
     }
 
-    public winner() {
+    public winner(): (Player | "" | "draw") {
         if (this._board.allMovesHaveBeenPlayed()) {
             return "draw";
         }
