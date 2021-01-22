@@ -69,14 +69,13 @@ class Game {
     }
 
     private _playerWithWinningLine() {
-        let winningLines = this._potentiallyWinningLines().filter(Game.lineIsAWinner)
-        for (let line of this._potentiallyWinningLines()) {
-            if (Game.lineIsAWinner(line)) {
-                return line[0];
-            }
+        let winningLines = this._potentiallyWinningLines().filter(
+            Game.lineIsAWinner
+        )
+        if (winningLines.length) {
+            return winningLines[0][0];
         }
-
-        return ""
+        return "";
     }
 
     private static lineIsAWinner(line): boolean {
