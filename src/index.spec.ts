@@ -30,10 +30,11 @@ class Board {
     }
 
     public print(): void {
-        console.log(this._moves);
+        console.log(this.rows());
     }
 
     public rows() {
+        // Refactor: no more magic numbers
         return [
             [this._moves[0], this._moves[1], this._moves[2]],
             [this._moves[3], this._moves[4], this._moves[5]],
@@ -42,6 +43,7 @@ class Board {
     }
 
     public columns() {
+        // Refactor: no more magic numbers
         return [
             [this._moves[0], this._moves[3], this._moves[6]],
             [this._moves[1], this._moves[4], this._moves[7]],
@@ -50,6 +52,7 @@ class Board {
     }
 
     public diagonals() {
+        // Refactor: no more magic numbers
         return [
             [this._moves[0], this._moves[4], this._moves[8]],
             [this._moves[2], this._moves[4], this._moves[6]],
@@ -92,9 +95,7 @@ class Game {
     }
 
     private _potentiallyWinningLines() {
-        // Refactor: no more magic numbers
-        // Refactor: wrap `_moves` in a type
-        // Refactor: too many lines
+        // Refactor: Law of Demeter violation
         return this._board
             .rows()
             .concat(this._board.columns())
