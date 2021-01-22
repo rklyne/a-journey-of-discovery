@@ -37,11 +37,7 @@ class Game {
     }
 
     private _changePlayer() {
-        if (this._currentPlayer === "X") {
-            this._currentPlayer = "O";
-        } else {
-            this._currentPlayer = "X";
-        }
+        this._currentPlayer = (this._currentPlayer === "X") ? "O" : "X";
     }
 
     private _potentiallyWinningLines() {
