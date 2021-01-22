@@ -25,7 +25,7 @@ class Game {
     }
 
     public move(n) {
-        if (this._moves[n] != "") {
+        if (this._moves[n] !== "") {
             throw new Error("Cant play same move");
         }
         this._moves[n] = this._currentPlayer;
@@ -37,7 +37,7 @@ class Game {
     }
 
     private _changePlayer() {
-        if (this._currentPlayer == "X") {
+        if (this._currentPlayer === "X") {
             this._currentPlayer = "O";
         } else {
             this._currentPlayer = "X";
@@ -63,18 +63,21 @@ class Game {
     public winner() {
 
         for (let line of this._winningLines()) {
-            if (new Set(line).size === 1) {
-                if (line[0] != "") {
+            if (Game.allArrayElementAreTheSame(line)) {
+                if (line[0] !== "") {
                     return line[0];
-                }             
+                }
             }
-            
         }
 
         if (this._moves.indexOf("") === -1) {
             return "draw";
         }
-        return ""
+        return "";
+    }
+
+    private static allArrayElementAreTheSame(array) {
+        return new Set(array).size === 1;
     }
 
 }
